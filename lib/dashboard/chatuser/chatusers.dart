@@ -278,7 +278,6 @@ class _ChatScreenState extends State<ChatScreen> {
                           setState(() {
                             messageController.clear();
                             FocusScope.of(context).requestFocus(FocusNode());
-
                           });
                         },
                         child: Text('Send'),
