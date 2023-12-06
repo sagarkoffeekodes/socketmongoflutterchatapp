@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../dashboard/homescreen.dart';
 import '../providers/autheticationProvider/UserRegistrationProvider.dart';
 import 'login.dart';
 
@@ -20,6 +22,11 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+
+  Future<void> saveToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLoggedIn', true);
+  }
 
   @override
   void initState() {
@@ -174,12 +181,21 @@ class _RegisterPageState extends State<RegisterPage> {
                       "password": _passwordController.text
                     };
 
-                    await authProvider!.registerPost(data, "register", context);
-                    if (authProvider!.isRegisterSuccess) {
+                    await authProvider!.registerPost(data, "register", context)
+                        .then((value) {
+                    print("Response: $value");
+
+                    saveToken();
+
+                 if (authProvider!.isRegisterSuccess) {
+
                       print("register done  or not");
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => LoginPage()));
-                    }
+
+
+                      Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: (_) => homeScreen()));
+                 }
+                    });
                   }
                 },
                 child: Text('Register'),
@@ -190,7 +206,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LoginPage(),
+                        builder: (context) => homeScreen(),
                       ));
                 },
                 child: Text('Back to login?'),

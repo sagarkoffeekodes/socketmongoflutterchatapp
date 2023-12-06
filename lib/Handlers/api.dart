@@ -21,5 +21,6 @@ class API {
 
   static const login = "${baseUrl}api/auth/";
   static const register = "${baseUrl}api/auth/";
+  static const idgetDetails = "${baseUrl}api/auth/";
 
 }

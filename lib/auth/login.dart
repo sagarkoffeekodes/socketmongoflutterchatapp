@@ -26,10 +26,8 @@ class _LoginPageState extends State<LoginPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString('token', token);
     prefs.setBool('isLoggedIn', true);
-
-
-
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -77,10 +75,9 @@ class _LoginPageState extends State<LoginPage> {
               // Password field
               TextFormField(
                 controller: _passwordController,
-                obscureText: true,
+                obscureText: _isObscure,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
-
                     suffixIcon: IconButton(
                       icon: Icon(
                         _isObscure
@@ -89,31 +86,26 @@ class _LoginPageState extends State<LoginPage> {
                         color: Colors.grey,
                         size: 20,
                       ),
-
                       onPressed: () {
                         setState(() {
                           _isObscure = !_isObscure;
                         });
                       },
                     ),
-
-                    hintText: "Password"
-                ),
-                validator: (value) {
-
+                    hintText: "Password"),
+                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter your password.';
                   }
                   return null;
                 },
-
               ),
               SizedBox(height: 20.0),
               authProvider!.isLoginLoading
                   ? CircularProgressIndicator(
-                color: Colors.blue,
-                backgroundColor: Colors.red,
-              )
+                      color: Colors.blue,
+                      backgroundColor: Colors.red,
+                    )
                   : SizedBox.shrink(),
               // Login button
               SizedBox(height: 20.0),
@@ -124,19 +116,20 @@ class _LoginPageState extends State<LoginPage> {
                       "email": _emailController.text,
                       "password": _passwordController.text
                     };
-                     authProvider!.loginPost(data, "login", context).then((value){
-                       print("Response: $value");
+                    authProvider!
+                        .loginPost(data, "login", context)
+                        .then((value) {
+                      print("Response: $value");
 
-                       if (authProvider!.isLoginSuccess) {
+                      if (authProvider!.isLoginSuccess) {
                         var token = value['token'];
                         saveToken(token);
 
-
                         print("Token: $token");
                         Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(builder: (_) => homeScreen()));
-                    }});
-
+                            MaterialPageRoute(builder: (_) => homeScreen()));
+                      }
+                    });
                   }
                 },
                 child: Text('Login'),

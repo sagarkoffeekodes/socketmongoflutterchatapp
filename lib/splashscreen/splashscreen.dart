@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:saggichatapp/auth/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../Utils/Preferences.dart';
 import '../auth/register.dart';
 import '../dashboard/homescreen.dart';
 
@@ -26,6 +27,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = await Preferences.getUserId();
+    print('User ID retrieved: $userId');
     bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
     if (isLoggedIn) {
