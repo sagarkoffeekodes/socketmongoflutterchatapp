@@ -38,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
     } else {
       // User is not logged in, navigate to login screen
       Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (_) => LoginPage()));
+          .pushReplacement(MaterialPageRoute(builder: (_) => RegisterPage()));
     }
   }
 

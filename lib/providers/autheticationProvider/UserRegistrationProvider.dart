@@ -101,10 +101,12 @@ class AuthProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       var body = json.decode(response.body);
 
+      // SharedPreferences prefs = await SharedPreferences.getInstance();
+      await Preferences.setUserId(body['id']);
+      // Preferences.setUserId(body['id']);
+
+      print('come to here${body['id']}');
       if (body["st"] == "Success") {
-
-
-
         print('come to here${body}');
 
         isLoginLoading = false;

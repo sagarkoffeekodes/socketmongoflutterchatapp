@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:saggichatapp/auth/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
@@ -54,19 +55,19 @@ class _homeScreenState extends State<homeScreen> {
     socket!.connect();
     socket!.on('connect', (_) {
       print('Connected to server');
-      if (userName != null) {
-        socket!.emit('setUsername', userName);
-      }
-    });
-    socket!.emit('setUsername', userName);
+      socket!.emit('setUsername', userName);
 
-    socket!.on('userList', (data) {
-      print('Received userList data: $data');
-      setState(() {
-        // userList.clear(); // Clear the existing list
-        userList = List<String>.from(data);
+      socket!.on('userList', (data) {
+        print('Received userList data: $data');
+        setState(() {
+          // userList.clear(); // Clear the existing list
+          userList = List<String>.from(data);
+        });
       });
+      // if (userName != null) {
+      // }
     });
+
 
    /* socket!.on('privateMessage', (data) {
       print('Received privateMessage: $data');
@@ -103,7 +104,13 @@ class _homeScreenState extends State<homeScreen> {
     });
 
   }
-
+  @override
+  void dispose() {
+    socket!.disconnected;
+    // Disconnect the socket when the screen is disposed
+    socket!.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +130,7 @@ class _homeScreenState extends State<homeScreen> {
               // Clear all data in shared preferences
               prefs.setBool('isLoggedIn', false);
               Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (_) => SplashScreen()));
+                  MaterialPageRoute(builder: (_) => LoginPage()));
             },
           ),
         ],
@@ -155,10 +162,14 @@ class _homeScreenState extends State<homeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ChatScreen(username: userList[index]),
+                          builder: (context) => ChatScreen(
+                            selectedUser: userList[index],
+                            socket: socket!,
+                          ),
                         ),
                       );
                     });
+
 
                     print("Selected index: $selectedIndex");
                     print("Selected user: ${userList[selectedIndex!]}");
@@ -216,10 +227,5 @@ class _homeScreenState extends State<homeScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    // Disconnect the socket when the screen is disposed
-    socket!.dispose();
-    super.dispose();
-  }
+
 }
